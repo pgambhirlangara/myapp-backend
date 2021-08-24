@@ -1,24 +1,30 @@
 const path = require("path");
 
 const express = require("express");
-const app = express();
 
 const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session");
+const csrf = require("csurf");
+const flash = require("connect-flash");
+
+const Questions = require("./models/questions");
+
 const MONGODB_URI =
   "mongodb+srv://yumi:HNYp6CMgzItJL9yA@cluster0.lbe7x.mongodb.net/questions?retryWrites=true&w=majority";
 
+const app = express();
 const store = new MongoDBStore({
   uri: MONGODB_URI,
   collection: "sessions",
 });
 
-const Questions = require("./models/questions");
+const csrfProtection = csrf();
+
+app.set("view engine", "jsx");
 
 const questionRoutes = require("./routes/questionsRoutes");
 
-app.set("view engine", "jsx");
 app.use(
   session({
     secret: "my secret id",
@@ -27,6 +33,9 @@ app.use(
     store: store,
   })
 );
+
+app.use(csrfProtection);
+app.use(flash());
 
 app.use((req, res, next) => {
   if (!req.session.user) {
@@ -38,6 +47,12 @@ app.use((req, res, next) => {
       next();
     })
     .catch((err) => console.log(err));
+});
+
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
 });
 
 app.use(questionRoutes);
