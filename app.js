@@ -4,11 +4,14 @@ const express = require("express");
 
 const mongoose = require("mongoose");
 const session = require("express-session");
-const MongoDBStore = require("connect-mongodb-session");
+const MongoDBStore = require("connect-mongodb-session")(session);
 const csrf = require("csurf");
 const flash = require("connect-flash");
 
+// var cors = require("cors");
+
 const Questions = require("./models/questions");
+const User = require("./models/user");
 
 const MONGODB_URI =
   "mongodb+srv://yumi:HNYp6CMgzItJL9yA@cluster0.lbe7x.mongodb.net/questions?retryWrites=true&w=majority";
@@ -36,12 +39,13 @@ app.use(
 
 app.use(csrfProtection);
 app.use(flash());
+// app.use(cors());
 
 app.use((req, res, next) => {
   if (!req.session.user) {
     return next();
   }
-  Questions.findById(req.session.user._id)
+  User.findById(req.session.user._id)
     .then((user) => {
       req.user = user;
       next();
@@ -57,11 +61,15 @@ app.use((req, res, next) => {
 
 app.use(questionRoutes);
 
+app.get("/api", (req, res) => {
+  res.json({ message: "Hello World!" });
+});
+
 mongoose
-  .connect()
+  .connect(MONGODB_URI)
   .then((result) => {
     console.log("connected");
-    app.listen(5000);
+    app.listen(3001);
   })
   .catch((err) => {
     console.log(err);
