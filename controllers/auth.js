@@ -30,6 +30,7 @@ exports.getSignin = (req, res, next) => {
 };
 
 exports.postLogin = (req, res, next) => {
+  console.log("@", req.body);
   const email = req.body.email;
   const password = req.body.password;
   User.findOne({ email: email })
@@ -46,6 +47,7 @@ exports.postLogin = (req, res, next) => {
             req.session.user = user;
             return req.session.save((err) => {
               console.log(err);
+              console.log(req.session.isLoggedIn);
               res.redirect("/");
             });
           }
@@ -61,6 +63,8 @@ exports.postLogin = (req, res, next) => {
 };
 
 exports.postSignin = (req, res, next) => {
+  console.log("@", req.body);
+  const name = req.body.name;
   const email = req.body.email;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
@@ -77,14 +81,14 @@ exports.postSignin = (req, res, next) => {
         .hash(password, 12)
         .then((hashPassword) => {
           const user = new User({
+            name: name,
             email: email,
             password: hashPassword,
-            cart: { items: [] },
           });
           return user.save();
         })
         .then((result) => {
-          res.redirect("/login");
+          res.redirect("/");
         });
     })
     .catch((err) => {
