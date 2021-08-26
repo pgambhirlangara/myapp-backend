@@ -9,4 +9,6 @@ router.get("/", questionsController.showQuestion);
 
 router.get("/questions", questionsController.showQuestion);
 
+router.get("/questions", questionsController.getQuestions);
+
 module.exports = router;

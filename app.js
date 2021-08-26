@@ -63,7 +63,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(questionRoutes);
+app.use("/questions", questionRoutes);
 app.use(authRoutes);
 
 app.get("/api", (req, res) => {
