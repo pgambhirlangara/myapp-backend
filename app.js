@@ -10,6 +10,7 @@ const flash = require("connect-flash");
 
 // var cors = require("cors");
 
+//import models
 const Questions = require("./models/questions");
 const User = require("./models/user");
 
@@ -17,6 +18,8 @@ const MONGODB_URI =
   "mongodb+srv://yumi:HNYp6CMgzItJL9yA@cluster0.lbe7x.mongodb.net/questions?retryWrites=true&w=majority";
 
 const app = express();
+
+//Store session in the MongoDBStore
 const store = new MongoDBStore({
   uri: MONGODB_URI,
   collection: "sessions",
@@ -24,13 +27,15 @@ const store = new MongoDBStore({
 
 // const Protection = csrf();
 
-app.set("view engine", "jsx");
+// app.set("view engine", "jsx");
 
+//import routes
 const questionRoutes = require("./routes/questionsRoutes");
 const authRoutes = require("./routes/auth");
 
 app.use(express.urlencoded({ extended: false }));
 
+//initialize session
 app.use(
   session({
     secret: "my secret id",
@@ -63,13 +68,28 @@ app.use((req, res, next) => {
   next();
 });
 
+//read middleware function inside of the routes and enable them.
+
+// const questionRoutes = new Router();
+
+// questionRoutes.get("/");
+
+// const answerRoutes = new Router();
+
+// // /answers/questions
+// answerRoutes.get("/questions");
+
+///@@@questionsを書くことでroutesのurlにつながるからroutes
+//@@@URLのダブりを防ぐために、app.js内に/questionsなどは記載する。(上記参照)
 app.use("/questions", questionRoutes);
+// app.use("/answers", answerRoutes);
 app.use(authRoutes);
 
 app.get("/api", (req, res) => {
   res.json({ message: "Hello World!" });
 });
 
+//connect to mongoose
 mongoose
   .connect(MONGODB_URI)
   .then((result) => {

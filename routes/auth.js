@@ -6,11 +6,11 @@ const router = express.Router();
 
 router.get("/login", authController.getLogin);
 
-router.get("/signin", authController.getSignin);
+router.get("/signup", authController.getSignup);
 
 router.post("/login", authController.postLogin);
 
-router.post("/signin", authController.postSignin);
+router.post("/signup", authController.postSignup);
 
 router.post("/logout", authController.postLogout);
 

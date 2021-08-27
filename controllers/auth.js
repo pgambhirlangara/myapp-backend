@@ -16,15 +16,15 @@ exports.getLogin = (req, res, next) => {
   });
 };
 
-exports.getSignin = (req, res, next) => {
+exports.getSignup = (req, res, next) => {
   let message = req.flash("error");
   if (message.length > 0) {
     message = message[0];
   } else {
     message = null;
   }
-  res.render("auth/signin", {
-    path: "/signin",
+  res.render("auth/signup", {
+    path: "/signup",
     errorMessage: message,
   });
 };
@@ -39,6 +39,7 @@ exports.postLogin = (req, res, next) => {
         req.flash("error", "Invalid email or password");
         return res.redirect("/login");
       }
+      //compare password and hashed password
       bcrypt
         .compare(password, user.password)
         .then((doMatch) => {
@@ -47,7 +48,7 @@ exports.postLogin = (req, res, next) => {
             req.session.user = user;
             return req.session.save((err) => {
               console.log(err);
-              console.log(req.session.isLoggedIn);
+              console.log("session", req.session.isLoggedIn);
               res.redirect("/");
             });
           }
@@ -62,7 +63,7 @@ exports.postLogin = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
-exports.postSignin = (req, res, next) => {
+exports.postSignup = (req, res, next) => {
   console.log("@", req.body);
   const name = req.body.name;
   const email = req.body.email;
@@ -75,21 +76,27 @@ exports.postSignin = (req, res, next) => {
           "error",
           "E-mail exists already, please pick a different one"
         );
-        return res.redirect("/signin");
+        return res.redirect("/signup");
       }
-      return bcrypt
-        .hash(password, 12)
-        .then((hashPassword) => {
-          const user = new User({
-            name: name,
-            email: email,
-            password: hashPassword,
-          });
-          return user.save();
-        })
-        .then((result) => {
-          res.redirect("/");
-        });
+      //compare password and hashed password
+      return (
+        bcrypt
+          //hash password and salt
+          //12(salt) will create random string
+          .hash(password, 12)
+          .then((hashPassword) => {
+            //set data to userSchema in the model
+            const user = new User({
+              name: name,
+              email: email,
+              password: hashPassword,
+            });
+            return user.save();
+          })
+          .then((result) => {
+            res.redirect("/");
+          })
+      );
     })
     .catch((err) => {
       console.log(err);

@@ -3,12 +3,17 @@ const express = require("express");
 
 const questionsController = require("../controllers/questions");
 
+// /questions
 const router = express.Router();
 
-router.get("/", questionsController.showQuestion);
+// /questions
+// router.get("/", questionsController.showQuestion);
+router.get("/", questionsController.getQuestions);
 
-router.get("/questions", questionsController.showQuestion);
+//@@@res.renderはejs
+// router.get("/questions", questionsController.showQuestion);
 
-router.get("/questions", questionsController.getQuestions);
+// /questions/quesitons
+// router.get("/questions", questionsController.getQuestions);
 
 module.exports = router;
