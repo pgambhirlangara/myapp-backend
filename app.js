@@ -31,6 +31,7 @@ const store = new MongoDBStore({
 
 //import routes
 const questionRoutes = require("./routes/questionsRoutes");
+const resultsRoutes = require("./routes/resultsRoutes");
 const authRoutes = require("./routes/auth");
 
 app.use(express.urlencoded({ extended: false }));
@@ -82,12 +83,9 @@ app.use((req, res, next) => {
 ///@@@questionsを書くことでroutesのurlにつながるからroutes
 //@@@URLのダブりを防ぐために、app.js内に/questionsなどは記載する。(上記参照)
 app.use("/questions", questionRoutes);
+app.use("/result", resultsRoutes);
 // app.use("/answers", answerRoutes);
 app.use(authRoutes);
-
-app.get("/api", (req, res) => {
-  res.json({ message: "Hello World!" });
-});
 
 //connect to mongoose
 mongoose

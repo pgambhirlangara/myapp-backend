@@ -9,7 +9,6 @@ const Questions = require("../models/questions.js");
 exports.getQuestions = async (req, res) => {
   try {
     const questions = await Questions.find();
-    console.log(questions);
 
     //@@@setを呼ぶ(response headerをセットする。)
     return res
