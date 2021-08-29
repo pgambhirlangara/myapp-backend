@@ -2,31 +2,45 @@ const bcrypt = require("bcryptjs");
 
 const User = require("../models/user");
 
-exports.getLogin = (req, res, next) => {
-  let message = req.flash("error");
-  if (message.length > 0) {
-    message = message[0];
-  } else {
-    message = null;
-  }
+// exports.getLogin = (req, res, next) => {
+//   let message = req.flash("error");
+//   if (message.length > 0) {
+//     message = message[0];
+//   } else {
+//     message = null;
+//   }
 
-  res.render("auth/login", {
-    path: "/login",
-    errorMessage: message,
-  });
-};
+//   res.render("auth/login", {
+//     path: "/login",
+//     errorMessage: message,
+//   });
+// };
 
-exports.getSignup = (req, res, next) => {
-  let message = req.flash("error");
-  if (message.length > 0) {
-    message = message[0];
-  } else {
-    message = null;
+// exports.getSignup = (req, res, next) => {
+//   let message = req.flash("error");
+//   if (message.length > 0) {
+//     message = message[0];
+//   } else {
+//     message = null;
+//   }
+//   res.render("auth/signup", {
+//     path: "/signup",
+//     errorMessage: message,
+//   });
+// };
+
+exports.getLogin = async (req, res) => {
+  try {
+    const login = await User.find();
+
+    //@@@setを呼ぶ(response headerをセットする。)
+    return res
+      .status(200)
+      .set("access-control-allow-origin", "http://localhost:3000")
+      .json(login);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
   }
-  res.render("auth/signup", {
-    path: "/signup",
-    errorMessage: message,
-  });
 };
 
 exports.postLogin = (req, res, next) => {
@@ -48,7 +62,6 @@ exports.postLogin = (req, res, next) => {
             req.session.user = user;
             return req.session.save((err) => {
               console.log(err);
-              console.log("session", req.session.isLoggedIn);
               res.redirect("/");
             });
           }
@@ -61,6 +74,20 @@ exports.postLogin = (req, res, next) => {
         });
     })
     .catch((err) => console.log(err));
+};
+
+exports.getSignup = async (req, res) => {
+  try {
+    const signup = await User.find();
+
+    //@@@setを呼ぶ(response headerをセットする。)
+    return res
+      .status(200)
+      .set("access-control-allow-origin", "http://localhost:3000")
+      .json(signup);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
 };
 
 exports.postSignup = (req, res, next) => {
@@ -90,6 +117,11 @@ exports.postSignup = (req, res, next) => {
               name: name,
               email: email,
               password: hashPassword,
+            });
+            req.session.isLoggedIn = true;
+            req.session.user = user;
+            req.session.save((err) => {
+              console.log(err);
             });
             return user.save();
           })
