@@ -84,10 +84,10 @@ app.use((req, res, next) => {
 //@@@URLのダブりを防ぐために、app.js内に/questionsなどは記載する。(上記参照)
 app.use("/questions", questionRoutes);
 app.use("/result", resultsRoutes);
-app.use(authRoutes);
+app.use("/user", authRoutes);
 
 // app.use("/answers", answerRoutes);
-app.use(authRoutes);
+// app.use(authRoutes);
 
 //connect to mongoose
 mongoose

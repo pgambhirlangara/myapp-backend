@@ -29,6 +29,20 @@ const User = require("../models/user");
 //   });
 // };
 
+// exports.getSession = async (req, res) => {
+//   try {
+//     const session = await Session.find();
+
+//     //@@@setを呼ぶ(response headerをセットする。)
+//     return res
+//       .status(200)
+//       .set("access-control-allow-origin", "http://localhost:3000")
+//       .json(session);
+//   } catch (error) {
+//     res.status(404).json({ message: error.message });
+//   }
+// };
+
 exports.getLogin = async (req, res) => {
   try {
     const login = await User.find();
