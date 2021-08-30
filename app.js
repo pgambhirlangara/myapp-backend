@@ -80,14 +80,12 @@ app.use((req, res, next) => {
 // // /answers/questions
 // answerRoutes.get("/questions");
 
-///@@@questionsを書くことでroutesのurlにつながるからroutes
-//@@@URLのダブりを防ぐために、app.js内に/questionsなどは記載する。(上記参照)
+///@@@第一引数の/questionsはroutesフォルダのurlにつながる。例えばroutesフォルダにも/questionと記載すると。URLは/question/questionとダブってしまうので注意
+//@@@URLのダブりを防ぐために、app.js内に/questionsなどは記載する。
+//@@@app.js内でurlを記載することで、routesフォルダをみなくてもここでURLを一括管理できるので、なるべくここにURLを記載するように。
 app.use("/questions", questionRoutes);
 app.use("/result", resultsRoutes);
 app.use(authRoutes);
-
-// app.use("/answers", answerRoutes);
-// app.use(authRoutes);
 
 //connect to mongoose
 mongoose

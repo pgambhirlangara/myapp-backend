@@ -10,7 +10,7 @@ const router = express.Router();
 // router.get("/", questionsController.showQuestion);
 router.get("/", questionsController.getQuestions);
 
-//@@@res.renderはejs
+//@@@res.renderはejsで使う。
 // router.get("/questions", questionsController.showQuestion);
 
 // /questions/quesitons
