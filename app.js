@@ -6,9 +6,11 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 // const csrf = require("csurf");
-const flash = require("connect-flash");
+// const flash = require("connect-flash");
 
-// var cors = require("cors");
+//@@@@
+// const bodyParser = require("body-parser");
+const cors = require("cors");
 
 //import models
 const Questions = require("./models/questions");
@@ -33,8 +35,12 @@ const store = new MongoDBStore({
 const questionRoutes = require("./routes/questionsRoutes");
 const resultsRoutes = require("./routes/resultsRoutes");
 const authRoutes = require("./routes/auth");
+const sessionRoutes = require("./routes/session");
+//@@@@
+app.use(cors());
 
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 //initialize session
 app.use(
@@ -47,8 +53,7 @@ app.use(
 );
 
 // app.use(csrfProtection);
-app.use(flash());
-// app.use(cors());
+// app.use(flash());
 
 app.use((req, res, next) => {
   if (!req.session.user) {
@@ -86,6 +91,7 @@ app.use((req, res, next) => {
 app.use("/questions", questionRoutes);
 app.use("/result", resultsRoutes);
 app.use(authRoutes);
+app.use("/session", sessionRoutes);
 
 //connect to mongoose
 mongoose

@@ -70,14 +70,18 @@ exports.postLogin = (req, res, next) => {
       //compare password and hashed password
       bcrypt
         .compare(password, user.password)
-        .then((doMatch) => {
+        .then(async (doMatch) => {
           if (doMatch) {
             req.session.isLoggedIn = true;
             req.session.user = user;
-            return req.session.save((err) => {
+            await req.session.save((err) => {
               console.log(err);
-              res.redirect("/");
+              // res.redirect("/");
             });
+            //requestとresponseは対応させる。
+            res.status(201).end();
+            //@@@@return内としたのコードに行ってしまう。
+            return;
           }
           req.flash("error", "Invalid email or password");
           res.redirect("/login");
@@ -110,14 +114,21 @@ exports.postSignup = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
+
+  console.log("session", req.session);
+
   User.findOne({ email: email })
     .then((userDoc) => {
       if (userDoc) {
-        req.flash(
-          "error",
-          "E-mail exists already, please pick a different one"
-        );
-        return res.redirect("/signup");
+        // req.flash(
+        //   "error",
+        //   "E-mail exists already, please pick a different one"
+        // );
+
+        // return redirect("/signup");
+        return res.status(400).json({
+          error: "E-mail exists already, please pick a different one",
+        });
       }
       //compare password and hashed password
       return (
@@ -125,7 +136,8 @@ exports.postSignup = (req, res, next) => {
           //hash password and salt
           //12(salt) will create random string
           .hash(password, 12)
-          .then((hashPassword) => {
+          //@@@@
+          .then(async (hashPassword) => {
             //set data to userSchema in the model
             const user = new User({
               name: name,
@@ -134,14 +146,19 @@ exports.postSignup = (req, res, next) => {
             });
             req.session.isLoggedIn = true;
             req.session.user = user;
-            req.session.save((err) => {
-              console.log(err);
-            });
-            return user.save();
+            // await user.save();
+            user.save();
+            //ユーザーの代わりにsessionを格納する
+            // await req.session.save();
+            //@@@@必要な情報のみを返す。
+            res.status(201).end();
+            //@@@@
+            //signupした時にユーザーを返すのNG hashed pwでも返すのはセキュリティ上NG _idも返すのやめた方がbetter
+            // return user.save();
           })
-          .then((result) => {
-            res.redirect("/");
-          })
+        // .then((result) => {
+        //   res.redirect("/");
+        // })
       );
     })
     .catch((err) => {
@@ -150,6 +167,8 @@ exports.postSignup = (req, res, next) => {
 };
 
 exports.postLogout = (req, res, next) => {
+  // ここまだ何かしないといけない
+  // destory() しても
   req.session.destroy((err) => {
     console.log(err);
     res.redirect("/");
