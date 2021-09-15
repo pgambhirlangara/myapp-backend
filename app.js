@@ -16,6 +16,12 @@ const cors = require("cors");
 const Questions = require("./models/questions");
 const User = require("./models/user");
 
+// // 存在すればログインしている / 存在しなければログインしていない（ログアウトしている）
+// {
+//   expires: "",
+//   isLoggedIn: true | false,
+// };
+
 const MONGODB_URI =
   "mongodb+srv://yumi:HNYp6CMgzItJL9yA@cluster0.lbe7x.mongodb.net/questions?retryWrites=true&w=majority";
 
