@@ -10,10 +10,10 @@ const MongoDBStore = require("connect-mongodb-session")(session);
 
 //@@@@
 // const bodyParser = require("body-parser");
+
 const cors = require("cors");
 
 //import models
-const Questions = require("./models/questions");
 const User = require("./models/user");
 
 // // 存在すればログインしている / 存在しなければログインしていない（ログアウトしている）
@@ -41,9 +41,10 @@ const store = new MongoDBStore({
 const questionRoutes = require("./routes/questionsRoutes");
 const resultsRoutes = require("./routes/resultsRoutes");
 const authRoutes = require("./routes/auth");
-const sessionRoutes = require("./routes/session");
 //@@@@
-app.use(cors());
+//@http://localhost:3000/ /があるとoriginではない
+//@originとcredentialsを設定する。
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -73,12 +74,12 @@ app.use((req, res, next) => {
     .catch((err) => console.log(err));
 });
 
-app.use((req, res, next) => {
-  res.locals.isAuthenticated = req.session.isLoggedIn;
-  // res.locals.csrfToken = req.csrfToken();
-  console.log("hello");
-  next();
-});
+// app.use((req, res, next) => {
+//   res.locals.isAuthenticated = req.session.isLoggedIn;
+//   // res.locals.csrfToken = req.csrfToken();
+//   console.log("hello");
+//   next();
+// });
 
 //read middleware function inside of the routes and enable them.
 
@@ -97,11 +98,13 @@ app.use((req, res, next) => {
 app.use("/questions", questionRoutes);
 app.use("/result", resultsRoutes);
 app.use(authRoutes);
-app.use("/session", sessionRoutes);
+// app.use("/session", sessionRoutes);
+
+mongoose.set("useUnifiedTopology", true);
 
 //connect to mongoose
 mongoose
-  .connect(MONGODB_URI)
+  .connect(MONGODB_URI, { useNewUrlParser: true })
   .then((result) => {
     console.log("connected");
     app.listen(3001);

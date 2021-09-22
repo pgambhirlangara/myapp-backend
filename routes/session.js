@@ -1,10 +1,10 @@
-const path = require("path");
-const express = require("express");
+// const path = require("path");
+// const express = require("express");
 
-const sessionController = require("../controllers/session");
+// const sessionController = require("../controllers/session");
 
-const router = express.Router();
+// const router = express.Router();
 
-router.get("/", sessionController.getSession);
+// router.get("/", sessionController.getSession);
 
-module.exports = router;
+// module.exports = router;

@@ -7,9 +7,10 @@ const router = express.Router();
 //@@@@@
 router.get("/me", authController.getMe);
 
-// router.get("/login", authController.getLogin);
+//@@@@@psotLogoutだけど、router.getしたらlocalhost/3001/loginにアクセスできたのはなぜ？
+router.get("/login", authController.postLogin);
 
-// router.get("/signup", authController.getSignup);
+router.get("/signup", authController.postSignup);
 
 router.post("/login", authController.postLogin);
 

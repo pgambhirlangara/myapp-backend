@@ -60,13 +60,15 @@ const User = require("../models/user");
 //   // ログインしていない
 // }
 
-//@@@@@
+//@@@@@loginかsignupすることでsessionが作成され、http://localhost:3001/meにアクセスできるようになる。
 exports.getMe = (req, res) => {
   //もしsession.userがあるのであれば、200を返す。そうでなければエラー。
   if (req.session.user) {
+    console.log("req.session.user", req.session.user);
     // req.session.user === { id: "wqewqe", "name": "qweqwe" }
     res.status(200).json({ data: req.session.user });
   } else {
+    console.log("req.session.user doesn't exist", req.session);
     res.status(404).end();
   }
 };
@@ -140,7 +142,12 @@ exports.postLogin = (req, res, next) => {
           //   // res.redirect("/");
           // });
           //requestとresponseは対応させる。
+
+          //@routerではredirectは使わないほうが良い。(front側で元の画面に)history.pushなどで変更す。
+          // res.redirect("/");
+          // res.status(200).json({ data: req.session.user });
           res.status(201).end();
+
           //@@@@returnしないとコードに行ってしまう。
           return;
         }
@@ -186,6 +193,7 @@ exports.postSignup = (req, res) => {
   const confirmPassword = req.body.confirmPassword;
 
   console.log("session", req.session);
+  console.log("pw", req.body.password);
 
   User.findOne({ email: email })
     .then((userDoc) => {
@@ -218,11 +226,13 @@ exports.postSignup = (req, res) => {
               email: email,
               password: hashedPassword,
             });
-
             await user.save();
 
-            //session.userにemailとnameのみ渡す。passwordはセキュリティ上渡さない。
+            // res.status(200).json({ data: req.session.user });
             req.session.user = { email, name };
+            console.log("req.session.user", req.session.user);
+
+            //session.userにemailとnameのみ渡す。passwordはセキュリティ上渡さない。
 
             // req.session.isLoggedIn = true;
             // req.session.user = user;
@@ -231,18 +241,22 @@ exports.postSignup = (req, res) => {
             //ユーザーの代わりにsessionを格納する
             // await req.session.save();
             //@@@@必要な情報のみを返す。
-            res.status(201).end();
+
             //@@@@
             //signupした時にユーザーを返すのNG hashed pwでも返すのはセキュリティ上NG _idも返すのやめた方がbetter
             // return user.save();
+            //???なぜredirectしない？
+            // res.redirect("/");
+
+            res.status(201).end();
           })
-        // .then((result) => {
+        // .then(() => {
         //   res.redirect("/");
         // })
       );
     })
     .catch((err) => {
-      console.log(err);
+      console.log("signup", err);
 
       //catch内にはエラー時の処理も書いておくように。
       res.status(500).json({ error: "Internal error" }).end();
