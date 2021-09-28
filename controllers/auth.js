@@ -2,7 +2,13 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 
 exports.getMe = (req, res) => {
-  res.status(200).json({ data: req.session });
+  if (req.session.user) {
+    res.status(200).json({ data: req.session.user });
+  } else {
+    res.status(404).end();
+  }
+
+  // res.status(200).json({ data: req.session });
   return;
 };
 
@@ -47,6 +53,8 @@ exports.postLogin = (req, res, next) => {
 
 exports.postSignup = (req, res) => {
   if (req.session.user) {
+    console.log("already logged in");
+
     res.status(400).json({ error: "You've already logged in." }).end();
     return;
   }
@@ -58,12 +66,15 @@ exports.postSignup = (req, res) => {
 
   User.findOne({ email: email })
     .then((userDoc) => {
-      console.log("user doc", userDoc);
-
       if (userDoc) {
-        res.status(400).json({
-          error: "E-mail exists already, please pick a different one",
-        });
+        console.log("user doc", userDoc);
+        res
+          .status(400)
+          .json({
+            error:
+              "E-mail or password exists already, please pick a different one",
+          })
+          .end();
         return;
       }
 
@@ -82,11 +93,14 @@ exports.postSignup = (req, res) => {
             });
             await user.save();
             req.session.user = { email, name };
+            console.log("user was created");
             res.status(201).end();
+            return;
           })
       );
     })
-    .catch((err) => {
+    .catch(() => {
+      console.log("catch an error");
       res.status(500).json({ error: "Internal error" }).end();
     });
 };
