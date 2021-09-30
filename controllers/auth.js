@@ -44,7 +44,7 @@ exports.postLogin = (req, res, next) => {
     })
     .catch((err) => {
       console.log(err);
-      res.status(500).json({ error: "Internal error" }).end();
+      res.status(500).json({ error: "Internal error." }).end();
     });
 };
 
@@ -69,7 +69,7 @@ exports.postSignup = (req, res, next) => {
           .status(400)
           .json({
             error:
-              "E-mail or password exists already, please pick a different one",
+              "Email or password exists already. please pick a different one.",
           })
           .end();
         return;
@@ -97,7 +97,7 @@ exports.postSignup = (req, res, next) => {
     })
     .catch(() => {
       console.log("catch an error");
-      res.status(500).json({ error: "Internal error" }).end();
+      res.status(500).json({ error: "Internal error." }).end();
     });
 };
 
