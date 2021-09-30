@@ -7,8 +7,6 @@ exports.getMe = (req, res) => {
   } else {
     res.status(404).end();
   }
-
-  // res.status(200).json({ data: req.session });
   return;
 };
 
@@ -46,12 +44,11 @@ exports.postLogin = (req, res, next) => {
     })
     .catch((err) => {
       console.log(err);
-
       res.status(500).json({ error: "Internal error" }).end();
     });
 };
 
-exports.postSignup = (req, res) => {
+exports.postSignup = (req, res, next) => {
   if (req.session.user) {
     console.log("already logged in");
 
@@ -77,7 +74,6 @@ exports.postSignup = (req, res) => {
           .end();
         return;
       }
-
       //compare password and hashed password
       return (
         bcrypt
