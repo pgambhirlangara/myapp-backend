@@ -59,17 +59,17 @@ exports.postSignup = (req, res, next) => {
   const name = req.body.name;
   const email = req.body.email;
   const password = req.body.password;
-  const confirmPassword = req.body.confirmPassword;
+  // const confirmPassword = req.body.confirmPassword;
 
-  User.findOne({ email: email }, { password: password })
+  //passwordも入れたい;
+  User.findOne({ email: email })
     .then((userDoc) => {
       if (userDoc) {
         console.log("user doc", userDoc);
         res
           .status(400)
           .json({
-            error:
-              "Email or password exists already. please pick a different one.",
+            error: "Email exists already. please pick a different one.",
           })
           .end();
         return;

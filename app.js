@@ -1,5 +1,3 @@
-const path = require("path");
-
 const express = require("express");
 const mongoose = require("mongoose");
 const session = require("express-session");
@@ -45,18 +43,6 @@ app.use(
 
 // app.use(csrfProtection);
 
-app.use((req, res, next) => {
-  if (!req.session.user) {
-    return next();
-  }
-  User.findById(req.session.user._id)
-    .then((user) => {
-      req.user = user;
-      next();
-    })
-    .catch((err) => console.log(err));
-});
-
 // app.use((req, res, next) => {
 //   res.locals.isAuthenticated = req.session.isLoggedIn;
 //   // res.locals.csrfToken = req.csrfToken();
@@ -67,8 +53,6 @@ app.use((req, res, next) => {
 app.use("/questions", questionRoutes);
 app.use("/result", resultsRoutes);
 app.use(authRoutes);
-
-mongoose.set("useUnifiedTopology", true);
 
 //connect to mongoose
 mongoose

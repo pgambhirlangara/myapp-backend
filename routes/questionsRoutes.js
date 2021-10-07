@@ -3,7 +3,6 @@ const express = require("express");
 
 const questionsController = require("../controllers/questions");
 
-// /questions
 const router = express.Router();
 
 // /questions
