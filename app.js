@@ -4,6 +4,7 @@ const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const cors = require("cors");
 const path = require("path");
+const port = process.env.PORT || 3001;
 
 // const csrf = require("csurf");
 
@@ -72,4 +73,6 @@ mongoose
     console.log(err);
   });
 
-app.listen(process.env.PORT || 3001);
+app.listen(port, () => {
+  console.log("port is running");
+});
