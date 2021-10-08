@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const cors = require("cors");
+const path = require("path");
 
 // const csrf = require("csurf");
 
@@ -53,6 +54,13 @@ app.use(
 app.use("/questions", questionRoutes);
 app.use("/result", resultsRoutes);
 app.use(authRoutes);
+
+// Serve static files from the React frontend app
+app.use(express.static(path.join(__dirname, "build")));
+// Anything that doesn't match the above, send back index.html
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname + "/build/index.html"));
+});
 
 //connect to mongoose
 mongoose
