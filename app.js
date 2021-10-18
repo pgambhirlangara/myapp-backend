@@ -52,6 +52,10 @@ app.use(
 //   next();
 // });
 
+app.use('/', (req,res) => {
+  res.send("API END POINT");
+})
+
 app.use("/questions", questionRoutes);
 app.use("/result", resultsRoutes);
 app.use(authRoutes);
