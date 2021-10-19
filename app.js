@@ -28,7 +28,7 @@ const store = new MongoDBStore({
 const questionRoutes = require("./routes/questionsRoutes");
 const resultsRoutes = require("./routes/resultsRoutes");
 const authRoutes = require("./routes/auth");
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cors({ origin: "ec2-18-116-199-162.us-east-2.compute.amazonaws.com", credentials: true }));
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -42,6 +42,7 @@ app.use(
     store: store,
   })
 );
+
 
 // app.use(csrfProtection);
 
